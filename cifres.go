@@ -46,21 +46,27 @@ var (
 )
 
 func main() {
+	http.HandleFunc("/", handler)
+
 	wg.Add(len(cifras))
-	for i := range cifras {
-		go func(i int) {
-			defer wg.Done()
-		}(i)
+	for i := range letras {
+		go processaLinha(i)
 	}
 	wg.Wait()
 
-	http.HandleFunc("/", handler)
+	fmt.Println("Todas as linhas foram processadas. Servidor iniciando...")
 	http.ListenAndServe(":8080", nil)
+}
+
+func processaLinha(i int) {
+	defer wg.Done()
+	// time.Sleep(1 * time.Second)
+	fmt.Printf("Linha %d processada: %s - %s\n", i, cifras[i%len(cifras)], letras[i])
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<h1>Caneta azul!</h1>")
 	for i := range letras {
-		fmt.Fprintf(w, "<p>%s - %s</p>", cifras[i], letras[i])
+		fmt.Fprintf(w, "<p>%s - %s</p>", cifras[i%len(cifras)], letras[i])
 	}
 }
