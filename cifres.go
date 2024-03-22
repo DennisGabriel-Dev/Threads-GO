@@ -62,7 +62,7 @@ func main() {
 func processaLinha(i int) {
 	defer wg.Done()
 	fmt.Printf("Linha %d processada: %s - %s\n", i, cifras[i%len(cifras)], letras[i])
-	capture_cifras[i] = fmt.Sprintf("Linha %d processada: %s - %s\n", i, cifras[i%len(cifras)], letras[i])
+	capture_cifras[i] = fmt.Sprintf("%s - %s\n", cifras[i%len(cifras)], letras[i])
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
