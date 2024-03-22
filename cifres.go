@@ -32,17 +32,18 @@ func letras_func() []string {
 
 func acordes_func() []string {
 	return []string{
-		"D", "G", "A", "Em",
-		"D", "G", "A", "Bm",
-		"D", "G", "A", "Cm",
-		"D", "G", "A",
+		"D7", "G#", "A7", "Em",
+		"Em", "Am", "A", "Bm",
+		"D2", "G6", "Am", "Cm",
+		"D", "G7", "A",
 	}
 }
 
 var (
-	wg     sync.WaitGroup
-	letras = letras_func()
-	cifras = acordes_func()
+	wg             sync.WaitGroup
+	letras         = letras_func()
+	cifras         = acordes_func()
+	capture_cifras = make([]string, 100, 100)
 )
 
 func main() {
@@ -60,13 +61,13 @@ func main() {
 
 func processaLinha(i int) {
 	defer wg.Done()
-	// time.Sleep(1 * time.Second)
 	fmt.Printf("Linha %d processada: %s - %s\n", i, cifras[i%len(cifras)], letras[i])
+	capture_cifras[i] = fmt.Sprintf("Linha %d processada: %s - %s\n", i, cifras[i%len(cifras)], letras[i])
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<h1>Caneta azul!</h1>")
-	for i := range letras {
-		fmt.Fprintf(w, "<p>%s - %s</p>", cifras[i%len(cifras)], letras[i])
+	for _, element := range capture_cifras {
+		fmt.Fprintf(w, "<p>%s</p>", element)
 	}
 }
